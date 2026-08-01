@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CyberHash Toolkit — Hash Generator &amp; Identifier</title>
+<meta name="description" content="Professional Hash Generator & Hash Identifier for security professionals and students." />
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<!-- Tailwind (CDN build, utility classes only) -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<!-- AOS scroll animations -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.1/aos.css">
+
+<!-- Site styles -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="antialiased">
+
+<!-- Page loader -->
+<div id="page-loader" class="fixed inset-0 z-[999] flex items-center justify-center bg-[var(--bg)] transition-opacity duration-500">
+  <div class="text-center">
+    <div class="spinner mx-auto mb-3" style="width:36px;height:36px;"></div>
+    <p class="font-display text-[var(--primary)] tracking-widest text-sm">INITIALIZING...</p>
+  </div>
+</div>
+
+<!-- Background layers -->
+<div class="grid-bg" aria-hidden="true"></div>
+<canvas id="matrix-canvas" aria-hidden="true"></canvas>
+
+<!-- Toasts -->
+<div id="toast-container" aria-live="polite"></div>
+
+<!-- ==================== NAVIGATION ==================== -->
+<header id="navbar" class="fixed top-0 inset-x-0 z-50">
+  <nav class="max-w-7xl mx-auto flex items-center justify-between px-5 py-3" aria-label="Primary">
+    <a href="#home" class="flex items-center gap-2 font-display text-lg text-[var(--primary)] text-glow">
+      <i class="fa-solid fa-shield-halved"></i> CyberHash<span class="text-[var(--secondary)]">Toolkit</span>
+    </a>
+
+    <div class="hidden md:flex items-center gap-6 text-sm">
+      <a href="#home" class="nav-link">Home</a>
+      <a href="#generator" class="nav-link">Hash Generator</a>
+      <a href="#identifier" class="nav-link">Hash Identifier</a>
+      <a href="#about" class="nav-link">About</a>
+      <a href="#documentation" class="nav-link">Documentation</a>
+      <a href="#contact" class="nav-link">Contact</a>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <button id="theme-toggle" type="button" class="btn-outline ripple w-9 h-9 rounded-full grid place-items-center" aria-label="Toggle dark and light mode">
+        <i class="fa-solid fa-circle-half-stroke"></i>
+      </button>
+      <button id="mobile-menu-toggle" type="button" class="md:hidden btn-outline ripple w-9 h-9 rounded-full grid place-items-center" aria-label="Open menu" aria-expanded="false">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </div>
+  </nav>
+
+  <div id="mobile-menu" class="hidden md:hidden flex flex-col gap-1 px-5 pb-4 text-sm">
+    <a href="#home" class="nav-link py-2">Home</a>
+    <a href="#generator" class="nav-link py-2">Hash Generator</a>
+    <a href="#identifier" class="nav-link py-2">Hash Identifier</a>
+    <a href="#about" class="nav-link py-2">About</a>
+    <a href="#documentation" class="nav-link py-2">Documentation</a>
+    <a href="#contact" class="nav-link py-2">Contact</a>
+  </div>
+</header>
+
+<main class="relative z-10 pt-20">
+
+  <!-- ==================== HERO ==================== -->
+  <section id="home" class="section min-h-[90vh] flex flex-col items-center justify-center text-center">
+    <p class="uppercase tracking-[0.3em] text-xs text-[var(--secondary)] mb-4" data-aos="fade-down">
+      <i class="fa-solid fa-terminal mr-2"></i>Built for defenders, not attackers
+    </p>
+    <h1 class="font-display text-4xl md:text-7xl font-800 mb-4 text-glow" data-aos="fade-up">
+      CyberHash <span class="text-[var(--primary)]">Toolkit</span>
+    </h1>
+    <p class="typing max-w-2xl text-base md:text-lg opacity-80 mb-8" data-aos="fade-up" data-aos-delay="150">
+      Professional Hash Generator &amp; Hash Identifier for Security Professionals.
+    </p>
+    <div class="flex flex-wrap items-center justify-center gap-4" data-aos="fade-up" data-aos-delay="300">
+      <a href="#generator" class="btn-primary ripple px-6 py-3 font-display text-sm inline-flex items-center gap-2">
+        <i class="fa-solid fa-bolt"></i> Launch Tool
+      </a>
+      <a href="#documentation" class="btn-outline ripple px-6 py-3 font-display text-sm inline-flex items-center gap-2">
+        <i class="fa-solid fa-book"></i> Documentation
+      </a>
+    </div>
+
+    <div class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl w-full" data-aos="fade-up" data-aos-delay="400">
+      <div class="glass hover-glow p-4 rounded-xl">
+        <p class="font-display text-2xl text-[var(--primary)]">10</p>
+        <p class="text-xs opacity-70">Hash Algorithms</p>
+      </div>
+      <div class="glass hover-glow p-4 rounded-xl">
+        <p class="font-display text-2xl text-[var(--secondary)]">13+</p>
+        <p class="text-xs opacity-70">Detectable Types</p>
+      </div>
+      <div class="glass hover-glow p-4 rounded-xl">
+        <p class="font-display text-2xl text-[var(--accent)]">100%</p>
+        <p class="text-xs opacity-70">Client Privacy*</p>
+      </div>
+      <div class="glass hover-glow p-4 rounded-xl">
+        <p class="font-display text-2xl text-[var(--primary)]">0</p>
+        <p class="text-xs opacity-70">Data Sold</p>
+      </div>
+    </div>
+    <p class="text-[10px] opacity-40 mt-2">*History is stored locally in the app database for your convenience only.</p>
+  </section>
+
+  <!-- ==================== HASH GENERATOR ==================== -->
+  <section id="generator" class="section max-w-6xl mx-auto">
+    <div class="mb-8" data-aos="fade-up">
+      <p class="text-xs uppercase tracking-widest text-[var(--secondary)] mb-2">01 — Module</p>
+      <h2 class="font-display text-3xl md:text-4xl mb-2">Hash Generator</h2>
+      <p class="opacity-70 max-w-2xl">Generate cryptographic hashes from plain text or a file, instantly.</p>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-6">
+      <!-- Text hashing -->
+      <div class="lg:col-span-2 glass p-5 rounded-2xl" data-aos="fade-up">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="font-display text-lg text-[var(--primary)]"><i class="fa-solid fa-keyboard mr-2"></i>Plain Text</h3>
+          <label class="flex items-center gap-2 text-xs opacity-80">
+            <input type="checkbox" id="live-toggle" class="accent-[var(--primary)]" checked>
+            Live generation
+          </label>
+        </div>
+        <textarea id="text-input" rows="5" placeholder="Type or paste text to hash..."
+          class="w-full bg-transparent border border-[var(--border)] rounded-xl p-3 text-sm focus:outline-none focus:border-[var(--primary)] resize-y"
+          aria-label="Text to hash"></textarea>
+
+        <fieldset id="algo-list" class="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-4">
+          <legend class="text-xs uppercase tracking-widest opacity-60 mb-2">Algorithms</legend>
+          {% for algo in algorithms %}
+          <label class="flex items-center gap-2 text-xs glass px-2 py-1.5 rounded-lg cursor-pointer">
+            <input type="checkbox" class="algo-checkbox accent-[var(--primary)]" value="{{ algo }}" checked>
+            {{ algo }}
+          </label>
+          {% endfor %}
+        </fieldset>
+
+        <div class="flex flex-wrap gap-3 mt-4">
+          <button id="generate-btn" type="button" class="btn-primary ripple px-5 py-2.5 text-sm font-display">
+            <i class="fa-solid fa-hashtag mr-1"></i> Generate Hash
+          </button>
+          <button id="clear-btn" type="button" class="btn-outline ripple px-5 py-2.5 text-sm">
+            <i class="fa-solid fa-eraser mr-1"></i> Clear
+          </button>
+          <button id="copy-all-btn" type="button" class="btn-outline ripple px-5 py-2.5 text-sm">
+            <i class="fa-regular fa-copy mr-1"></i> Copy All
+          </button>
+          <button id="download-all-btn" type="button" class="btn-outline ripple px-5 py-2.5 text-sm">
+            <i class="fa-solid fa-download mr-1"></i> Download TXT
+          </button>
+        </div>
+
+        <div id="hash-results" class="grid sm:grid-cols-2 gap-3 mt-5"></div>
+      </div>
+
+      <!-- File hashing -->
+      <div class="glass p-5 rounded-2xl" data-aos="fade-up" data-aos-delay="100">
+        <h3 class="font-display text-lg text-[var(--secondary)] mb-3"><i class="fa-solid fa-file-shield mr-2"></i>File Hash Generator</h3>
+        <div id="dropzone" tabindex="0" role="button" aria-label="Upload a file to hash"
+             class="dropzone rounded-xl p-6 text-center cursor-pointer">
+          <i class="fa-solid fa-cloud-arrow-up text-3xl text-[var(--primary)] mb-2"></i>
+          <p class="text-sm opacity-80">Drag &amp; drop a file, or click to browse</p>
+          <p class="text-xs opacity-50 mt-1">Max 50 MB</p>
+          <input type="file" id="file-input" class="hidden" />
+        </div>
+
+        <p id="file-meta" class="text-xs opacity-70 mt-3"></p>
+
+        <div id="file-progress-wrap" class="hidden mt-3">
+          <div class="progress-track h-2"><div id="file-progress-fill" class="progress-fill" style="width:0%"></div></div>
+        </div>
+
+        <div id="file-hash-results" class="grid gap-3 mt-4"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== HASH IDENTIFIER ==================== -->
+  <section id="identifier" class="section max-w-6xl mx-auto">
+    <div class="mb-8" data-aos="fade-up">
+      <p class="text-xs uppercase tracking-widest text-[var(--secondary)] mb-2">02 — Module</p>
+      <h2 class="font-display text-3xl md:text-4xl mb-2">Hash Identifier</h2>
+      <p class="opacity-70 max-w-2xl">Paste any hash and get a best-guess algorithm identification with a confidence score.</p>
+    </div>
+
+    <div class="grid lg:grid-cols-2 gap-6">
+      <div class="glass p-5 rounded-2xl" data-aos="fade-up">
+        <label for="identify-input" class="text-xs uppercase tracking-widest opacity-60 mb-2 block">Paste any hash</label>
+        <textarea id="identify-input" rows="3" placeholder="e.g. 5d41402abc4b2a76b9719d911017c592"
+          class="w-full bg-transparent border border-[var(--border)] rounded-xl p-3 text-sm font-mono focus:outline-none focus:border-[var(--primary)] resize-y"></textarea>
+        <button id="identify-btn" type="button" class="btn-primary ripple px-5 py-2.5 text-sm font-display mt-4">
+          <i class="fa-solid fa-magnifying-glass mr-1"></i> Identify
+        </button>
+
+        <div class="mt-6 text-xs opacity-60">
+          <p class="uppercase tracking-widest mb-2">Supported detection</p>
+          <div class="flex flex-wrap gap-2">
+            {% for t in ["MD5","NTLM","LM","SHA1","SHA224","SHA256","SHA384","SHA512","SHA3","RIPEMD160","Whirlpool","BLAKE2","Base64","Unknown"] %}
+            <span class="px-2 py-1 rounded-full border border-[var(--border)]">{{ t }}</span>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <div id="identify-results" class="glass p-5 rounded-2xl min-h-[220px] flex items-center justify-center text-sm opacity-50" data-aos="fade-up" data-aos-delay="100">
+        Results will appear here.
+      </div>
+    </div>
+
+    <!-- Hash comparison -->
+    <div class="glass p-5 rounded-2xl mt-6" data-aos="fade-up">
+      <h3 class="font-display text-lg text-[var(--accent)] mb-3"><i class="fa-solid fa-code-compare mr-2"></i>Hash Comparison</h3>
+      <div class="grid md:grid-cols-2 gap-3">
+        <input id="compare-a" type="text" placeholder="First hash" class="bg-transparent border border-[var(--border)] rounded-xl p-3 text-sm font-mono focus:outline-none focus:border-[var(--primary)]">
+        <input id="compare-b" type="text" placeholder="Second hash" class="bg-transparent border border-[var(--border)] rounded-xl p-3 text-sm font-mono focus:outline-none focus:border-[var(--primary)]">
+      </div>
+      <button id="compare-btn" type="button" class="btn-outline ripple px-5 py-2.5 text-sm mt-4">
+        <i class="fa-solid fa-scale-balanced mr-1"></i> Compare
+      </button>
+      <div id="compare-result" class="mt-4"></div>
+    </div>
+
+    <!-- Hash decoder (dictionary attack against common values) -->
+    <div class="glass p-5 rounded-2xl mt-6" data-aos="fade-up">
+      <h3 class="font-display text-lg text-[var(--primary)] mb-2"><i class="fa-solid fa-unlock-keyhole mr-2"></i>Hash Decoder</h3>
+      <p class="text-xs opacity-60 mb-4">Checks the hash against a small built-in list of extremely common passwords (e.g. "123456", "password"). This cannot reverse a hash mathematically — it only flags trivially weak matches, for defensive auditing.</p>
+      <div class="grid md:grid-cols-[1fr_auto] gap-3">
+        <input id="decode-input" type="text" placeholder="Paste a hash to check against common passwords"
+          class="bg-transparent border border-[var(--border)] rounded-xl p-3 text-sm font-mono focus:outline-none focus:border-[var(--primary)]">
+        <button id="decode-btn" type="button" class="btn-primary ripple px-5 py-2.5 text-sm font-display whitespace-nowrap">
+          <i class="fa-solid fa-key mr-1"></i> Decode
+        </button>
+      </div>
+      <div id="decode-result" class="mt-4"></div>
+    </div>
+
+    <!-- Encoding decoder/encoder (Base64, Hex, URL, ROT13 — reversible, NOT hashing) -->
+    <div class="glass p-5 rounded-2xl mt-6" data-aos="fade-up">
+      <h3 class="font-display text-lg text-[var(--secondary)] mb-2"><i class="fa-solid fa-code mr-2"></i>Encoding Decoder</h3>
+      <p class="text-xs opacity-60 mb-4">For reversible <em>encodings</em> (Base64, Hex, URL-encoding, ROT13) — not cryptographic hashes. These have no security property; they're just alternate text representations, always fully reversible.</p>
+
+      <div class="flex flex-wrap items-center gap-2 mb-3">
+        <label for="encoding-select" class="text-xs uppercase tracking-widest opacity-60">Encoding</label>
+        <select id="encoding-select" class="bg-[var(--card)] border border-[var(--border)] rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-[var(--primary)]">
+          {% for enc in ["Base64","Hex","URL","ROT13"] %}
+          <option value="{{ enc }}">{{ enc }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-4">
+        <div>
+          <label for="encoding-input" class="text-xs uppercase tracking-widest opacity-60 mb-1 block">Input</label>
+          <textarea id="encoding-input" rows="4" placeholder="Paste text or an encoded value..."
+            class="w-full bg-transparent border border-[var(--border)] rounded-xl p-3 text-sm font-mono focus:outline-none focus:border-[var(--primary)] resize-y"></textarea>
+          <div class="flex gap-2 mt-3">
+            <button id="encoding-decode-btn" type="button" class="btn-primary ripple px-4 py-2 text-sm font-display">
+              <i class="fa-solid fa-lock-open mr-1"></i> Decode
+            </button>
+            <button id="encoding-encode-btn" type="button" class="btn-outline ripple px-4 py-2 text-sm">
+              <i class="fa-solid fa-lock mr-1"></i> Encode
+            </button>
+          </div>
+        </div>
+        <div>
+          <label for="encoding-output" class="text-xs uppercase tracking-widest opacity-60 mb-1 block">Output</label>
+          <textarea id="encoding-output" rows="4" readonly placeholder="Result will appear here..."
+            class="w-full bg-transparent border border-[var(--border)] rounded-xl p-3 text-sm font-mono resize-y opacity-90"></textarea>
+          <button id="encoding-copy-btn" type="button" class="btn-outline ripple px-4 py-2 text-sm mt-3">
+            <i class="fa-regular fa-copy mr-1"></i> Copy Output
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== HASH CRACKER ==================== -->
+  <section id="cracker" class="section max-w-6xl mx-auto">
+    <div class="mb-8" data-aos="fade-up">
+      <p class="text-xs uppercase tracking-widest text-[var(--secondary)] mb-2">03 — Module</p>
+      <h2 class="font-display text-3xl md:text-4xl mb-2">Hash Cracker</h2>
+      <p class="opacity-70 max-w-2xl">A bounded, educational guess-and-check demo. This does not mathematically reverse a hash — it hashes candidate strings and checks for a match, so it only ever "cracks" hashes of values that are actually in the search space below.</p>
+    </div>
+
+    <div class="grid lg:grid-cols-2 gap-6">
+      <!-- Wordlist mode -->
+      <div class="glass p-5 rounded-2xl" data-aos="fade-up">
+        <h3 class="font-display text-lg text-[var(--primary)] mb-2"><i class="fa-solid fa-list-check mr-2"></i>Wordlist Attack</h3>
+        <p class="text-xs opacity-60 mb-4">Uses the built-in common-password list by default, or paste your own candidates below (one per line, capped at 5,000 entries).</p>
+
+        <label for="crack-wl-hash" class="text-xs uppercase tracking-widest opacity-60 mb-1 block">Target hash</label>
+        <input id="crack-wl-hash" type="text" placeholder="Paste the hash to check"
+          class="w-full bg-transparent border border-[var(--border)] rounded-xl p-3 text-sm font-mono focus:outline-none focus:border-[var(--primary)] mb-3">
+
+        <label for="crack-wl-list" class="text-xs uppercase tracking-widest opacity-60 mb-1 block">Custom wordlist (optional)</label>
+        <textarea id="crack-wl-list" rows="4" placeholder="One candidate per line — leave blank to use the built-in common-password list"
+          class="w-full bg-transparent border border-[var(--border)] rounded-xl p-3 text-sm font-mono focus:outline-none focus:border-[var(--primary)] resize-y mb-3"></textarea>
+
+        <button id="crack-wl-btn" type="button" class="btn-primary ripple px-5 py-2.5 text-sm font-display">
+          <i class="fa-solid fa-list-ul mr-1"></i> Run Wordlist Attack
+        </button>
+        <div id="crack-wl-result" class="mt-4"></div>
+      </div>
+
+      <!-- Brute-force mode -->
+      <div class="glass p-5 rounded-2xl" data-aos="fade-up" data-aos-delay="100">
+        <h3 class="font-display text-lg text-[var(--accent)] mb-2"><i class="fa-solid fa-shuffle mr-2"></i>Brute-Force Demo</h3>
+        <p class="text-xs opacity-60 mb-4">Tightly bounded (max length {{ max_brute_force_length }}, capped search space) — meant to show how quickly <em>short</em> passwords fall, not as a practical cracking tool.</p>
+
+        <label for="crack-bf-hash" class="text-xs uppercase tracking-widest opacity-60 mb-1 block">Target hash</label>
+        <input id="crack-bf-hash" type="text" placeholder="Paste the hash to check"
+          class="w-full bg-transparent border border-[var(--border)] rounded-xl p-3 text-sm font-mono focus:outline-none focus:border-[var(--primary)] mb-3">
+
+        <div class="grid grid-cols-2 gap-3 mb-3">
+          <div>
+            <label for="crack-bf-algo" class="text-xs uppercase tracking-widest opacity-60 mb-1 block">Algorithm</label>
+            <select id="crack-bf-algo" class="w-full bg-[var(--card)] border border-[var(--border)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[var(--primary)]">
+              {% for algo in algorithms %}
+              <option value="{{ algo }}" {% if algo == 'MD5' %}selected{% endif %}>{{ algo }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div>
+            <label for="crack-bf-length" class="text-xs uppercase tracking-widest opacity-60 mb-1 block">Max length (≤ {{ max_brute_force_length }})</label>
+            <input id="crack-bf-length" type="number" min="1" max="{{ max_brute_force_length }}" value="3"
+              class="w-full bg-transparent border border-[var(--border)] rounded-xl p-2 text-sm focus:outline-none focus:border-[var(--primary)]">
+          </div>
+        </div>
+
+        <label for="crack-bf-charset" class="text-xs uppercase tracking-widest opacity-60 mb-1 block">Charset (optional)</label>
+        <input id="crack-bf-charset" type="text" placeholder="Defaults to a-z0-9"
+          class="w-full bg-transparent border border-[var(--border)] rounded-xl p-3 text-sm font-mono focus:outline-none focus:border-[var(--primary)] mb-3">
+
+        <button id="crack-bf-btn" type="button" class="btn-outline ripple px-5 py-2.5 text-sm">
+          <i class="fa-solid fa-bolt mr-1"></i> Run Brute-Force
+        </button>
+        <div id="crack-bf-result" class="mt-4"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== HISTORY ==================== -->
+  <section id="history" class="section max-w-6xl mx-auto">
+    <div class="mb-6 flex flex-wrap items-end justify-between gap-4" data-aos="fade-up">
+      <div>
+        <p class="text-xs uppercase tracking-widest text-[var(--secondary)] mb-2">04 — Module</p>
+        <h2 class="font-display text-3xl md:text-4xl mb-2">Hash History</h2>
+        <p class="opacity-70 max-w-2xl">Recent operations performed in this app, stored locally in the app database.</p>
+      </div>
+      <div class="flex gap-2">
+        <input id="history-search" type="search" placeholder="Search history..." class="bg-transparent border border-[var(--border)] rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[var(--primary)]">
+        <button id="history-export-btn" type="button" class="btn-outline ripple px-3 py-2 text-sm" aria-label="Export history"><i class="fa-solid fa-file-export"></i></button>
+        <button id="history-clear-btn" type="button" class="btn-outline ripple px-3 py-2 text-sm" aria-label="Clear history"><i class="fa-solid fa-trash"></i></button>
+      </div>
+    </div>
+    <div id="history-list" class="grid gap-2" data-aos="fade-up"></div>
+  </section>
+
+  <!-- ==================== ABOUT ==================== -->
+  <section id="about" class="section max-w-4xl mx-auto">
+    <div data-aos="fade-up">
+      <p class="text-xs uppercase tracking-widest text-[var(--secondary)] mb-2">About</p>
+      <h2 class="font-display text-3xl md:text-4xl mb-6">About This Project</h2>
+      <div class="glass p-6 rounded-2xl space-y-4 text-sm leading-relaxed opacity-90">
+        <p><strong class="text-[var(--primary)]">Purpose.</strong> CyberHash Toolkit is a learning-focused utility for generating and identifying cryptographic hashes, built to help students and security practitioners understand how hashing works in practice.</p>
+        <p><strong class="text-[var(--primary)]">Educational use.</strong> Every module here is meant to demonstrate real concepts — integrity verification, hash identification heuristics, and safe handling of user input — rather than to enable any offensive activity.</p>
+        <p><strong class="text-[var(--primary)]">Defensive security.</strong> This project was created for cybersecurity learning and defensive security: verifying file integrity, understanding hash formats, and recognizing common algorithm fingerprints.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== DOCUMENTATION ==================== -->
+  <section id="documentation" class="section max-w-4xl mx-auto">
+    <div data-aos="fade-up">
+      <p class="text-xs uppercase tracking-widest text-[var(--secondary)] mb-2">Documentation</p>
+      <h2 class="font-display text-3xl md:text-4xl mb-6">Understanding Hashing</h2>
+    </div>
+
+    <div class="space-y-4">
+      <details class="glass p-5 rounded-2xl" open data-aos="fade-up">
+        <summary class="font-display text-[var(--primary)] cursor-pointer">What is Hashing?</summary>
+        <p class="text-sm opacity-80 mt-3 leading-relaxed">Hashing is a one-way process that turns data of any size into a fixed-length string called a digest. The same input always produces the same digest, small changes in input produce completely different digests, and — for a good hash function — you cannot practically reverse the digest back into the original data.</p>
+      </details>
+
+      <details class="glass p-5 rounded-2xl" data-aos="fade-up">
+        <summary class="font-display text-[var(--secondary)] cursor-pointer">Hashing vs. Encryption vs. Encoding</summary>
+        <ul class="text-sm opacity-80 mt-3 leading-relaxed list-disc list-inside space-y-1">
+          <li><strong>Hashing</strong> is one-way and not meant to be reversed — used for integrity checks and password storage (with salting).</li>
+          <li><strong>Encryption</strong> is two-way and reversible with the correct key — used to keep data confidential.</li>
+          <li><strong>Encoding</strong> (like Base64) is a reversible format transformation with no secret key — used for compatibility, not security.</li>
+        </ul>
+      </details>
+
+      <details class="glass p-5 rounded-2xl" data-aos="fade-up">
+        <summary class="font-display text-[var(--accent)] cursor-pointer">Why Hashes Are Used</summary>
+        <ul class="text-sm opacity-80 mt-3 leading-relaxed list-disc list-inside space-y-1">
+          <li>Verifying file integrity after downloads or transfers</li>
+          <li>Detecting duplicate files quickly</li>
+          <li>Storing password verifiers (with salting and slow KDFs, not raw hashes)</li>
+          <li>Digital signatures and blockchain data structures</li>
+        </ul>
+      </details>
+
+      <details class="glass p-5 rounded-2xl" data-aos="fade-up">
+        <summary class="font-display text-[var(--primary)] cursor-pointer">Common Algorithms</summary>
+        <p class="text-sm opacity-80 mt-3 leading-relaxed">MD5 and SHA1 are fast but considered broken for security-critical use due to collision attacks — they're still fine for non-security checksums. The SHA-2 family (SHA224/256/384/512) and SHA-3 family are the current standards for integrity and digital signatures. BLAKE2 offers SHA-3-level security with better speed. For passwords, dedicated slow algorithms like bcrypt, scrypt, or Argon2 should be used instead of general-purpose hash functions.</p>
+      </details>
+
+      <details class="glass p-5 rounded-2xl" data-aos="fade-up">
+        <summary class="font-display text-[var(--secondary)] cursor-pointer">Real-World Examples</summary>
+        <p class="text-sm opacity-80 mt-3 leading-relaxed">Software vendors publish a SHA256 checksum next to a download so users can confirm the file wasn't corrupted or tampered with. Git uses hashes (SHA1, moving to SHA256) to identify every commit and object in a repository. Forensic investigators hash evidence files to prove they weren't altered during analysis.</p>
+      </details>
+
+      <details class="glass p-5 rounded-2xl" data-aos="fade-up">
+        <summary class="font-display text-[var(--accent)] cursor-pointer">Best Practices</summary>
+        <ul class="text-sm opacity-80 mt-3 leading-relaxed list-disc list-inside space-y-1">
+          <li>Never use raw MD5/SHA1 for password storage</li>
+          <li>Always salt passwords and use a purpose-built KDF (bcrypt/Argon2)</li>
+          <li>Use SHA256 or stronger for integrity verification</li>
+          <li>Compare hashes using constant-time comparison in production security code</li>
+          <li>Don't rely on hash identification alone to "crack" a hash — this tool is for learning and triage, not offense</li>
+        </ul>
+      </details>
+    </div>
+  </section>
+
+  <!-- ==================== CONTACT ==================== -->
+  <section id="contact" class="section max-w-3xl mx-auto text-center">
+    <div data-aos="fade-up">
+      <p class="text-xs uppercase tracking-widest text-[var(--secondary)] mb-2">Contact</p>
+      <h2 class="font-display text-3xl md:text-4xl mb-4">Get in Touch</h2>
+      <p class="opacity-70 mb-8">Questions, feedback, or ideas for new detection heuristics? Reach out.</p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a href="https://github.com/" class="glass hover-glow px-5 py-3 rounded-xl text-sm"><i class="fa-brands fa-github mr-2"></i>GitHub</a>
+        <a href="https://linkedin.com/" class="glass hover-glow px-5 py-3 rounded-xl text-sm"><i class="fa-brands fa-linkedin mr-2"></i>LinkedIn</a>
+        <a href="mailto:contact@example.com" class="glass hover-glow px-5 py-3 rounded-xl text-sm"><i class="fa-solid fa-envelope mr-2"></i>Email</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ==================== FOOTER ==================== -->
+<footer class="section relative z-10 border-t border-[var(--border)] text-center text-xs opacity-60">
+  <p class="mb-2">CyberHash Toolkit — built for cybersecurity education and defensive security.</p>
+  <p>Version 1.0.0 · MIT License · <a href="#documentation" class="underline hover:text-[var(--primary)]">Docs</a></p>
+</footer>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.1/aos.js"></script>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
